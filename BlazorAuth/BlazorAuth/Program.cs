@@ -1,11 +1,22 @@
 using BlazorAuth.Client.Pages;
 using BlazorAuth.Components;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Identity.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
+builder.Services.AddMicrosoftIdentityWebAppAuthentication(builder.Configuration);
+
+// Add a fallback authorisation policy that will be invoked by the static assets middleware
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 
 var app = builder.Build();
 
@@ -23,11 +34,15 @@ else
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(BlazorAuth.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(BlazorAuth.Client._Imports).Assembly)
+    .RequireAuthorization();
 
 app.Run();
