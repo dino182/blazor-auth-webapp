@@ -41,13 +41,14 @@ else
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
+// Configure the middleware in the correct order so that pipeline operates properly
+app.UseRouting();
+app.UseAuthentication(); // must follow UseRouting
+app.UseAuthorization(); // must follow UseAuthentication
 // Static files are served after authentication and authorisation so that they are not publicly accessible
 // The authorisation fallback policy will prevent non-authenticated users accessing them
 app.UseStaticFiles();
-app.UseAntiforgery();
+app.UseAntiforgery(); // must follow UseAuthorization
 
 // Require authorisation by default on all endpoints
 
