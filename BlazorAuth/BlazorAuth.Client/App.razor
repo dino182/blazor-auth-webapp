@@ -10,10 +10,60 @@
     <link rel="stylesheet" href="BlazorAuth.styles.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <HeadOutlet @rendermode="@(new InteractiveWebAssemblyRenderMode(false))" />
+
+    <style>
+        .loading-progress {
+            position: relative;
+            display: block;
+            width: 8rem;
+            height: 8rem;
+            margin: 20vh auto 1rem auto;
+        }
+
+            .loading-progress circle {
+                fill: none;
+                stroke: #e0e0e0;
+                stroke-width: 0.6rem;
+                transform-origin: 50% 50%;
+                transform: rotate(-90deg);
+            }
+
+                .loading-progress circle:last-child {
+                    stroke: #1b6ec2;
+                    stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
+                    transition: stroke-dasharray 0.05s ease-in-out;
+                }
+
+        .loading-progress-text {
+            position: relative;
+            text-align: center;
+            font-weight: bold;
+            top: -90px;
+        }
+
+            .loading-progress-text:after {
+                content: var(--blazor-load-percentage-text, "Loading");
+            }
+
+        code {
+            color: #c02d76;
+        }
+
+        body > #app-loading:not(:first-child) {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
     <Routes @rendermode="@(new InteractiveWebAssemblyRenderMode(false))" />
+    <div id="app-loading">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
     <script src="_framework/blazor.web.js"></script>
 </body>
 

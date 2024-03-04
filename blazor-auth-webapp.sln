@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorAuth", "BlazorAuth\BlazorAuth\BlazorAuth.csproj", "{6C1C44D0-CDAE-4194-AF9E-D43EC5B2FEE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorAuth", "BlazorAuth\BlazorAuth\BlazorAuth.csproj", "{6C1C44D0-CDAE-4194-AF9E-D43EC5B2FEE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorAuth.Client", "BlazorAuth\BlazorAuth.Client\BlazorAuth.Client.csproj", "{1102753B-CA4A-410A-8407-8DEF220CDF85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorAuth.Client", "BlazorAuth\BlazorAuth.Client\BlazorAuth.Client.csproj", "{1102753B-CA4A-410A-8407-8DEF220CDF85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
