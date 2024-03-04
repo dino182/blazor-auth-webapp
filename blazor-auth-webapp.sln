@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorAuth", "BlazorAuth\Bl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorAuth.Client", "BlazorAuth\BlazorAuth.Client\BlazorAuth.Client.csproj", "{1102753B-CA4A-410A-8407-8DEF220CDF85}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyWebApplication", "LegacyWebApplication\LegacyWebApplication.csproj", "{E68A340A-7ED2-43B7-9680-041AFAA7C592}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1102753B-CA4A-410A-8407-8DEF220CDF85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1102753B-CA4A-410A-8407-8DEF220CDF85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1102753B-CA4A-410A-8407-8DEF220CDF85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E68A340A-7ED2-43B7-9680-041AFAA7C592}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E68A340A-7ED2-43B7-9680-041AFAA7C592}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E68A340A-7ED2-43B7-9680-041AFAA7C592}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E68A340A-7ED2-43B7-9680-041AFAA7C592}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
