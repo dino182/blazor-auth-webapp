@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using BlazorAuth;
 using BlazorAuth.Client;
 using BlazorAuth.Components.Pages;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web;
+using Yarp.ReverseProxy.Transforms;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,10 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<WeatherForecaster>();
 
-builder.Services.AddMicrosoftIdentityWebAppAuthentication(builder.Configuration);
+builder.Services.AddMicrosoftIdentityWebAppAuthentication(builder.Configuration)
+    .EnableTokenAcquisitionToCallDownstreamApi()
+    .AddMicrosoftGraph()
+    .AddInMemoryTokenCaches();
 
 // Add a fallback authorisation policy that will be invoked by the static assets middleware
 builder.Services.AddAuthorization(options =>
@@ -24,6 +29,9 @@ builder.Services.AddAuthorization(options =>
         .RequireAuthenticatedUser()
         .Build();
 });
+
+// Add YARP services
+builder.Services.AddHttpForwarder();
 
 var app = builder.Build();
 
@@ -40,14 +48,14 @@ else
 }
 
 app.UseHttpsRedirection();
+// Static files in the web root will be publicly accessible
+// This is required to prevent the reverse proxy endpoint routing attempting to serve these from the fallback application
+app.UseStaticFiles();
 
 // Configure the middleware in the correct order so that pipeline operates properly
 app.UseRouting();
 app.UseAuthentication(); // must follow UseRouting
 app.UseAuthorization(); // must follow UseAuthentication
-// Static files are served after authentication and authorisation so that they are not publicly accessible
-// The authorisation fallback policy will prevent non-authenticated users accessing them
-app.UseStaticFiles();
 app.UseAntiforgery(); // must follow UseAuthorization
 
 // Require authorisation by default on all endpoints
@@ -68,6 +76,27 @@ app.MapGet("/weather-forecast", ([FromServices] WeatherForecaster weatherForecas
 
 // Set up authentication endpoints
 app.MapLoginAndLogout()
+    .RequireAuthorization();
+
+// Forward Microsoft Graph Toolkit proxy requests to Microsoft Graph
+app.MapForwarder("/api/mgt/{**catch-all}", "https://graph.microsoft.com", builderContext =>
+    {
+        // Trim the prefix from the request as this is just the frontend proxy configuration
+        builderContext.AddPathRemovePrefix("/api/mgt");
+
+        // Attach Bearer tokens to the request from the Microsoft.Identity.Web token acquisition service
+        builderContext.AddRequestTransform(async transformContext =>
+        {
+            var tokenAcquisition = transformContext.HttpContext.RequestServices.GetRequiredService<ITokenAcquisition>();
+            var accessToken = await tokenAcquisition.GetAccessTokenForUserAsync(new[] { "user.read" });
+
+            transformContext.ProxyRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        });
+    })
+    .RequireAuthorization();
+
+// Forward all other requests to the fallback application
+app.MapForwarder("/{**catch-all}", app.Configuration["ProxyTo"])
     .RequireAuthorization();
 
 app.Run();

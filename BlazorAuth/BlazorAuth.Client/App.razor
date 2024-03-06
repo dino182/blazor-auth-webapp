@@ -65,6 +65,11 @@
         <div class="loading-progress-text"></div>
     </div>
     <script src="_framework/blazor.web.js"></script>
+    <script type="module">
+        import { registerMgtComponents, Providers, ProxyProvider } from "https://unpkg.com/@@microsoft/mgt@@4";
+        Providers.globalProvider = new ProxyProvider("https://localhost:7220/api/mgt");
+        registerMgtComponents();
+    </script>
 </body>
 
 </html>
