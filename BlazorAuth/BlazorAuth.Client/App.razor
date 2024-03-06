@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject NavigationManager Navigation
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -67,7 +69,7 @@
     <script src="_framework/blazor.web.js"></script>
     <script type="module">
         import { registerMgtComponents, Providers, ProxyProvider } from "https://unpkg.com/@@microsoft/mgt@@4";
-        Providers.globalProvider = new ProxyProvider("https://localhost:7220/api/mgt");
+        Providers.globalProvider = new ProxyProvider("@($"{Navigation.BaseUri}api/mgt")");
         registerMgtComponents();
     </script>
 </body>
