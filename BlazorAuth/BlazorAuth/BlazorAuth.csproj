@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BlazorAuth.Client\BlazorAuth.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Caching.SqlServer" Version="8.0.2" />
     <PackageReference Include="Microsoft.Identity.Web" Version="2.17.1" />
     <PackageReference Include="Microsoft.Identity.Web.GraphServiceClient" Version="2.17.1" />
     <PackageReference Include="Yarp.ReverseProxy" Version="2.1.0" />

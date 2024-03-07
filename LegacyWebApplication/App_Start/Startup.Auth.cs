@@ -2,10 +2,11 @@
 using System.Configuration;
 using System.IO;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.DependencyInjection;
 using Owin;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.OWIN;
-using Microsoft.Identity.Web.TokenCacheProviders.InMemory;
+using Microsoft.Identity.Web.TokenCacheProviders.Distributed;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Interop;
@@ -40,7 +41,19 @@ namespace LegacyWebApplication
             // Add the services you need.
             owinTokenAcquirerFactory.Services
                 .AddMicrosoftGraph()
-                .AddInMemoryTokenCaches();
+                .AddDistributedTokenCaches()
+                .AddDistributedSqlServerCache(options =>
+                {
+                    options.ConnectionString = ConfigurationManager.ConnectionStrings["Auth"].ConnectionString;
+                    options.SchemaName = "dbo";
+                    options.TableName = "TokenCache";
+
+                    // You don't want the SQL token cache to be purged before the access token has expired. Usually
+                    // access tokens expire after 1 hours (but this can be changed by token lifetime policies), whereas
+                    // the default sliding expiration for the distributed SQL database is 20 mins. 
+                    // Use a value which is above 60 mins (or the lifetime of a token in case of longer lived tokens)
+                    options.DefaultSlidingExpiration = TimeSpan.FromMinutes(90);
+                });
 
             owinTokenAcquirerFactory.Build();
         }
