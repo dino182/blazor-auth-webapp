@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using BlazorAuth.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -22,7 +23,7 @@ internal static class LoginLogoutEndpointRouteBuilderExtensions
         group.MapPost("/logout", () => TypedResults.SignOut(new AuthenticationProperties { RedirectUri = "/" }, [CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme]));
 
         // Endpoint to demonstrate supplying user claims to SPA frontend
-        group.MapGet("/profile", (ClaimsPrincipal user) => user.Claims.ToDictionary(x => x.Type, x => x.Value));
+        group.MapGet("/profile", (ClaimsPrincipal user) => user.Claims.Select(x => new UserClaim(x.Type, x.Value)));
 
         return group;
     }

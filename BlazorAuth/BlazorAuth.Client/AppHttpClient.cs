@@ -12,8 +12,8 @@ public class AppHttpClient
         _httpClient = httpClient;
     }
 
-    public async Task<Dictionary<string, string>> GetAuthenticationState() =>
-        await _httpClient.GetFromJsonAsync<Dictionary<string, string>>("authentication/profile") ??
+    public async Task<IEnumerable<UserClaim>> GetAuthenticationState() =>
+        await _httpClient.GetFromJsonAsync<IEnumerable<UserClaim>>("authentication/profile") ??
         throw new IOException("No authentication profile");
 
     public async Task<IEnumerable<WeatherForecast>> GetWeatherForecast() =>

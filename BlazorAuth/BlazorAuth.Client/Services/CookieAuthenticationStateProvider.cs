@@ -14,10 +14,10 @@ public class CookieAuthenticationStateProvider : AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var user = await _httpClient.GetAuthenticationState();
+        var claims = await _httpClient.GetAuthenticationState();
         return new AuthenticationState(
             new ClaimsPrincipal(
-                new ClaimsIdentity(user.Select(u => new Claim(u.Key, u.Value)), nameof(CookieAuthenticationStateProvider), "name", null)
+                new ClaimsIdentity(claims.Select(c => new Claim(c.Type, c.Value)), nameof(CookieAuthenticationStateProvider), "name", null)
             )
         );
     }
