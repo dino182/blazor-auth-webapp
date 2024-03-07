@@ -116,7 +116,7 @@ app.MapForwarder("/api/mgt/{**catch-all}", "https://graph.microsoft.com", builde
         builderContext.AddRequestTransform(async transformContext =>
         {
             var tokenAcquisition = transformContext.HttpContext.RequestServices.GetRequiredService<ITokenAcquisition>();
-            var accessToken = await tokenAcquisition.GetAccessTokenForUserAsync(new[] { "user.read" });
+            var accessToken = await tokenAcquisition.GetAccessTokenForUserAsync(["User.Read", "Calendars.Read", "Calendars.ReadBasic", "Calendars.ReadWrite", "Tasks.Read", "Tasks.ReadWrite"]);
 
             transformContext.ProxyRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
         });
