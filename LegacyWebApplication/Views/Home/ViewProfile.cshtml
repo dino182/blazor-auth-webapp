@@ -1,0 +1,12 @@
+﻿@{
+    ViewBag.Title = "View Profile";
+}
+
+@if (ViewBag.Message != null)
+{
+    <p>Exception: @ViewBag.Message</p>
+}
+else
+{
+    <p>Display Name: @ViewBag.User.DisplayName</p>
+}

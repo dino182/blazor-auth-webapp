@@ -1,0 +1,22 @@
+﻿@if (Request.IsAuthenticated)
+{
+    var claim = System.Security.Claims.ClaimsPrincipal.Current.FindFirst("preferred_username");
+    var name = claim != null ? claim.Value : string.Empty;
+
+    <ul class="nav navbar-nav navbar-right">
+        <li class="navbar-text">
+            Hello, @name!
+        </li>
+        <li>
+            @Html.ActionLink("Sign out", "SignOut", "Account", new { area = "" }, new { @class = "nav-link" })
+        </li>
+    </ul>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @Html.ActionLink("Sign in", "SignIn", "Account", new { area = "" }, new { @class = "nav-link" })
+        </li>
+    </ul>
+}

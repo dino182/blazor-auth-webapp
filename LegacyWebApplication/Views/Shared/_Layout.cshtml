@@ -20,7 +20,12 @@
                     <li><a class="nav-link" href="/Home">Legacy Home</a></li>
                     <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("View Profile", "ViewProfile", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
                 </ul>
+                @Html.Partial("_LoginPartial")
             </div>
         </div>
     </nav>

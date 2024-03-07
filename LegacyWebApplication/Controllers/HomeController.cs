@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using Microsoft.Identity.Web;
 
 namespace LegacyWebApplication.Controllers
 {
@@ -25,6 +24,23 @@ namespace LegacyWebApplication.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        public async Task<ActionResult> ViewProfile()
+        {
+            try
+            {
+                var graphServiceClient = this.GetGraphServiceClient();
+                var user = await graphServiceClient.Me.Request().GetAsync();
+                ViewBag.User = user;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Message = ex.Message;
+                return View();
+            }
         }
     }
 }
