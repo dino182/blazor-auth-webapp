@@ -3,7 +3,9 @@ using BlazorAuth;
 using BlazorAuth.Client;
 using BlazorAuth.Components.Pages;
 using BlazorAuth.Weather;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web;
@@ -21,6 +23,17 @@ builder.Services.AddMicrosoftIdentityWebAppAuthentication(builder.Configuration)
     .EnableTokenAcquisitionToCallDownstreamApi()
     .AddMicrosoftGraph()
     .AddInMemoryTokenCaches();
+
+// Set the authentication cookie name the same value as the fallback application
+builder.Services.Configure<CookieAuthenticationOptions>(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+    options.Cookie.Name = ".Blazor.Auth";
+});
+
+// Store data protection keys in a location accessible to both this application and the fallback application
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(builder.Configuration["KeysLocation"] ?? throw new InvalidOperationException("Missing KeysLocation configuration")))
+    .SetApplicationName("BlazorAuth");
 
 // Add a fallback authorisation policy that will be invoked by the static assets middleware
 builder.Services.AddAuthorization(options =>
@@ -96,7 +109,7 @@ app.MapForwarder("/api/mgt/{**catch-all}", "https://graph.microsoft.com", builde
     .RequireAuthorization();
 
 // Forward all other requests to the fallback application
-app.MapForwarder("/{**catch-all}", app.Configuration["ProxyTo"])
+app.MapForwarder("/{**catch-all}", app.Configuration["ProxyTo"] ?? throw new InvalidOperationException("Missing ProxyTo configuration"))
     .RequireAuthorization();
 
 app.Run();
